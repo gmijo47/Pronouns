@@ -1,0 +1,4 @@
+name: Pronouns
+version: '${project.version}'
+main: io.gmijo.Pronouns
+api-version: 1.20
