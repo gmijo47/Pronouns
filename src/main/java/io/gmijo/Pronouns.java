@@ -44,7 +44,7 @@ public class Pronouns extends JavaPlugin implements Listener {
             pronounAssociations.put(uuid, pronouns);
         }
     }
-
+    //test
     public void saveAssociations() {
         for (UUID uuid : pronounAssociations.keySet()) {
             config.set(uuid.toString(), pronounAssociations.get(uuid));
