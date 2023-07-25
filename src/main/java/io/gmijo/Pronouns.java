@@ -25,9 +25,8 @@ public class Pronouns extends JavaPlugin implements Listener {
     public void onEnable() {
         pronounAssociations = new HashMap<>();
         config = getConfig();
-        loadAssociations();
         saveDefaultConfig();
-
+        loadAssociations();
         getCommand("pronouns").setExecutor(new PronounsCommand(this));
         Bukkit.getPluginManager().registerEvents(this, this);
     }
