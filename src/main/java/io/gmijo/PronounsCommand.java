@@ -24,7 +24,10 @@ public class PronounsCommand implements CommandExecutor {
             sender.sendMessage("Only players can use this command.");
             return true;
         }
-
+        if (!sender.hasPermission("pronouns.add")) {
+            sender.sendMessage("You don't have permission to use this command.");
+            return true;
+        }
         Player player = (Player) sender;
 
         if (args.length != 2 || !args[0].equalsIgnoreCase("add")) {
