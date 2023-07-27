@@ -4,6 +4,7 @@ import com.lkeehl.tagapi.TagBuilder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 public class Pronouns extends JavaPlugin {
@@ -21,17 +22,15 @@ public class Pronouns extends JavaPlugin {
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
             if (cmd.getName().equalsIgnoreCase("prounounce")) {
-                if (args.length >= 2 && args[0].equalsIgnoreCase("set")) {
-                    String playerName = args[1];
-                    Player player = getServer().getPlayer(playerName);
-                    if (player != null) {
+                if (args.length >= 1 && args[0].equalsIgnoreCase("set")) {
+                    if (sender != null && sender instanceof Player) {
 
-                        TagBuilder builder = TagBuilder.create(player);
-                        builder.withLine(pl->args[2]);
+                        TagBuilder builder = TagBuilder.create((Entity) sender);
+                        builder.withLine(pl->args[1]);
                         builder.build();
 
-                        player.setPlayerListName("[" + args[2] + "]" + playerName);
-                        sender.sendMessage("Set the text below " + playerName + "'s nametag.");
+
+                        sender.sendMessage("Set the text below " + sender + "'s nametag.");
                     } else {
                         sender.sendMessage("Player not found.");
                     }
