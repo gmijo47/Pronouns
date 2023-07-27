@@ -22,7 +22,7 @@ public class Pronouns extends JavaPlugin {
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
             if (cmd.getName().equalsIgnoreCase("prounounce")) {
-                if (args.length >= 1 && args[0].equalsIgnoreCase("set")) {
+                if (args.length >= 2 && args[0].equalsIgnoreCase("set")) {
                     if (sender != null && sender instanceof Player) {
 
                         TagBuilder builder = TagBuilder.create((Entity) sender);
