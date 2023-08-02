@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class Pronouns extends JavaPlugin implements Listener {
 
-    private static HashMap<UUID, String> pronounAssociations;
+    public static HashMap<UUID, String> pronounAssociations;
     private static FileConfiguration config;
 
     @Override
@@ -28,6 +28,27 @@ public class Pronouns extends JavaPlugin implements Listener {
         loadAssociations();
         getCommand("prounounce").setExecutor(new PronounsCommand(this));
         Bukkit.getPluginManager().registerEvents(this, this);
+        startSync(this);
+
+    }
+
+    private void startSync(Pronouns pl) {
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(pl, new Runnable() {
+            @Override
+            public void run() {
+                for(Player player : Bukkit.getOnlinePlayers()){
+                    if (pronounAssociations.containsKey(player.getUniqueId())) {
+
+                        ArmorStand armorStand = getArmorStand(player);
+                        if (armorStand != null) {
+                            Location location = player.getLocation();
+                            armorStand.teleport(location.add(0, config.getDouble("heigh"), 0)); // Adjust the height offset (2 blocks) as desired
+                        }
+
+                    }
+                }
+            }
+        }, 240L, 1L);
     }
 
     @Override
@@ -52,10 +73,10 @@ public class Pronouns extends JavaPlugin implements Listener {
         }
         saveConfig();
     }
-
     public HashMap<UUID, String> getPronounAssociations() {
         return pronounAssociations;
     }
+
 
     // Event listeners
     @EventHandler
@@ -85,10 +106,10 @@ public class Pronouns extends JavaPlugin implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
         if (pronounAssociations.containsKey(player.getUniqueId())) {
-            spawnArmorStand(player, pronounAssociations.get(player));
+            spawnArmorStand(player, pronounAssociations.get(player.getUniqueId()));
         }
     }
-    @EventHandler
+    /*@EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (pronounAssociations.containsKey(player.getUniqueId())) {
@@ -99,6 +120,9 @@ public class Pronouns extends JavaPlugin implements Listener {
             }
         }
     }
+
+     */
+
     @EventHandler
     public void onGameModeSwitch(PlayerGameModeChangeEvent event){
         Player player = event.getPlayer();
@@ -111,17 +135,15 @@ public class Pronouns extends JavaPlugin implements Listener {
             case SURVIVAL:
             case ADVENTURE:{
                 if (pronounAssociations.containsKey(player.getUniqueId())) {
-                    spawnArmorStand(player, pronounAssociations.get(player));
+                    spawnArmorStand(player, pronounAssociations.get(player.getUniqueId()));
                 }
             }
         }
     }
 
+
     public static void spawnArmorStand(Player player, String pronouns) {
         Location location = player.getLocation();
-        if (pronounAssociations.containsKey(player.getUniqueId())) {
-            despawnArmorStand(player);
-        }
         ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location.add(0, config.getDouble("heigh"), 0), EntityType.ARMOR_STAND);
         armorStand.setInvisible(true);
         armorStand.setSmall(true);
