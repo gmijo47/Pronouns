@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 
 import java.util.regex.Pattern;
 
+import static io.gmijo.Pronouns.despawnArmorStand;
+import static io.gmijo.Pronouns.pronounAssociations;
+
 public class PronounsCommand implements CommandExecutor {
 
     private Pronouns plugin;
@@ -41,6 +44,9 @@ public class PronounsCommand implements CommandExecutor {
             return true;
         }
 
+        if (pronounAssociations.containsKey(player.getUniqueId())) {
+            despawnArmorStand(player);
+        }
         plugin.getPronounAssociations().put(player.getUniqueId(), pronoun);
         plugin.saveAssociations();
         plugin.spawnArmorStand(player, pronoun); // Spawn armor stand when pronouns are set

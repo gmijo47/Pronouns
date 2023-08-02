@@ -7,3 +7,6 @@ commands:
     description: Set your pronouns
     usage: /prounounce add <pronoun>
     permission: pronouns.add  # Set a custom permission node here, if desired
+  spawnextremearmorstand:
+    description: Spawn a small armor stand with the tag "extreme" and set it as passenger to the player.
+    usage: /spawnextremearmorstand

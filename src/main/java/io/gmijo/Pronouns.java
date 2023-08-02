@@ -27,6 +27,7 @@ public class Pronouns extends JavaPlugin implements Listener {
         saveDefaultConfig();
         loadAssociations();
         getCommand("prounounce").setExecutor(new PronounsCommand(this));
+        getCommand("spawnextremearmorstand").setExecutor(new SpawnExtremeArmorStandCommandExecutor());
         Bukkit.getPluginManager().registerEvents(this, this);
         startSync(this);
 
