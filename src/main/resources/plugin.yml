@@ -3,7 +3,7 @@ version: '${project.version}'
 main: io.gmijo.Pronouns
 api-version: '1.20'
 commands:
-  pronouns:
+  prounounce:
     description: Set your pronouns
-    usage: /pronouns add <pronoun>
+    usage: /prounounce add <pronoun>
     permission: pronouns.add  # Set a custom permission node here, if desired
