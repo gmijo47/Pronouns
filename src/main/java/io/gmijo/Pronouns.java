@@ -8,9 +8,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -18,8 +17,8 @@ import java.util.UUID;
 
 public class Pronouns extends JavaPlugin implements Listener {
 
-    private HashMap<UUID, String> pronounAssociations;
-    private FileConfiguration config;
+    private static HashMap<UUID, String> pronounAssociations;
+    private static FileConfiguration config;
 
     @Override
     public void onEnable() {
@@ -72,7 +71,20 @@ public class Pronouns extends JavaPlugin implements Listener {
             despawnArmorStand(player);
         }
     }
-
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event){
+        Player player = event.getPlayer();
+        if (pronounAssociations.containsKey(player.getUniqueId())) {
+            despawnArmorStand(player);
+        }
+    }
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event){
+        Player player = event.getPlayer();
+        if (pronounAssociations.containsKey(player.getUniqueId())) {
+            spawnArmorStand(player, pronounAssociations.get(player));
+        }
+    }
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
@@ -80,32 +92,51 @@ public class Pronouns extends JavaPlugin implements Listener {
             ArmorStand armorStand = getArmorStand(player);
             if (armorStand != null) {
                 Location location = player.getLocation();
-                armorStand.teleport(location.add(0, 0.2, 0)); // Adjust the height offset (2 blocks) as desired
+                armorStand.teleport(location.add(0, config.getDouble("heigh"), 0)); // Adjust the height offset (2 blocks) as desired
+            }
+        }
+    }
+    @EventHandler
+    public void onGameModeSwitch(PlayerGameModeChangeEvent event){
+        Player player = event.getPlayer();
+        switch(event.getNewGameMode()){
+            case SPECTATOR: {
+                despawnArmorStand(player);
+                break;
+            }
+            case CREATIVE:
+            case SURVIVAL:
+            case ADVENTURE:{
+                if (pronounAssociations.containsKey(player.getUniqueId())) {
+                    spawnArmorStand(player, pronounAssociations.get(player));
+                }
             }
         }
     }
 
     public static void spawnArmorStand(Player player, String pronouns) {
         Location location = player.getLocation();
-        double heightOffset = 0.2; // Adjust this value to raise or lower the armor stand
-
-        ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location.add(0, heightOffset, 0), EntityType.ARMOR_STAND);
+        if (pronounAssociations.containsKey(player.getUniqueId())) {
+            despawnArmorStand(player);
+        }
+        ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location.add(0, config.getDouble("heigh"), 0), EntityType.ARMOR_STAND);
         armorStand.setInvisible(true);
         armorStand.setSmall(true);
         armorStand.setBasePlate(false);
         armorStand.setInvulnerable(true);
         armorStand.setCustomName(pronouns);
         armorStand.setCustomNameVisible(true);
+        armorStand.setGravity(false);
     }
 
-    private void despawnArmorStand(Player player) {
+    public static void despawnArmorStand(Player player) {
         ArmorStand armorStand = getArmorStand(player);
         if (armorStand != null) {
             armorStand.remove();
         }
     }
 
-    private ArmorStand getArmorStand(Player player) {
+    private static ArmorStand getArmorStand(Player player) {
         Location location = player.getLocation();
         for (ArmorStand armorStand : location.getWorld().getEntitiesByClass(ArmorStand.class)) {
             if (armorStand.getCustomName() != null &&
