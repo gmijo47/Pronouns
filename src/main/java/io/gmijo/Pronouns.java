@@ -80,14 +80,14 @@ public class Pronouns extends JavaPlugin implements Listener {
             ArmorStand armorStand = getArmorStand(player);
             if (armorStand != null) {
                 Location location = player.getLocation();
-                armorStand.teleport(location.add(0, 2, 0)); // Adjust the height offset (2 blocks) as desired
+                armorStand.teleport(location.add(0, 0.2, 0)); // Adjust the height offset (2 blocks) as desired
             }
         }
     }
 
     public static void spawnArmorStand(Player player, String pronouns) {
         Location location = player.getLocation();
-        double heightOffset = 2.0; // Adjust this value to raise or lower the armor stand
+        double heightOffset = 0.2; // Adjust this value to raise or lower the armor stand
 
         ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location.add(0, heightOffset, 0), EntityType.ARMOR_STAND);
         armorStand.setInvisible(true);
