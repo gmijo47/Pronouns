@@ -37,6 +37,9 @@ public class Pronouns extends JavaPlugin implements Listener {
 
     private void loadAssociations() {
         for (String uuidString : config.getKeys(false)) {
+            if(uuidString.length() != 36){
+                continue;
+            }
             UUID uuid = UUID.fromString(uuidString);
             String pronouns = config.getString(uuidString);
             pronounAssociations.put(uuid, pronouns);
